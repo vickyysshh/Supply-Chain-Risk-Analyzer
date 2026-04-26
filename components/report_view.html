@@ -1,0 +1,26 @@
+<!-- ═══════════════════════════════════════
+     REPORT VIEW — components/report_view.html
+     Sidebar button: Intelligence Report
+     Shows: Full report with PDF/CSV/Print/Email/Copy actions
+═══════════════════════════════════════ -->
+<div class="view-header-bar">
+  <h2>Intelligence Report</h2>
+  <div class="view-header-actions">
+    <button class="action-btn primary" id="downloadPdfBtn">
+      <span class="material-icons-round">picture_as_pdf</span> Download PDF
+    </button>
+    <button class="action-btn" id="downloadReportBtn">
+      <span class="material-icons-round">table_chart</span> Export CSV
+    </button>
+    <button class="action-btn" id="printReportBtn">
+      <span class="material-icons-round">print</span> Print
+    </button>
+    <button class="action-btn" id="emailReportBtn">
+      <span class="material-icons-round">email</span> Email
+    </button>
+    <button class="action-btn" id="copyReportBtn">
+      <span class="material-icons-round">content_copy</span> Copy
+    </button>
+  </div>
+</div>
+<div id="reportContainer" class="report-view-body"></div>

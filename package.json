@@ -1,0 +1,32 @@
+{
+  "name": "supply-chain-risk-analyzer",
+  "version": "2.0.0",
+  "description": "Multi-Agent AI System for Supply Chain Disruption Risk Analysis",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "npx kill-port 5000 && node backend/server.js",
+    "dev": "npx kill-port 5000 && nodemon backend/server.js",
+    "serve": "serve -s . -l 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "supply-chain",
+    "risk-analysis",
+    "multi-agent-ai",
+    "logistics"
+  ],
+  "author": "Hackathon Team",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "searoute-js": "^0.1.0",
+    "serve": "^14.2.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

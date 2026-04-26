@@ -1,0 +1,22 @@
+<!-- ═══════════════════════════════════════
+     ROUTES VIEW — components/routes_view.html
+     Sidebar button: Network Graph
+     Shows: Full-screen map with alt routes + route comparison list
+═══════════════════════════════════════ -->
+<div class="view-header-bar">
+  <h2>Network Route Graph</h2>
+  <div class="view-header-actions">
+    <button class="action-btn" id="compareRoutesBtn2">
+      <span class="material-icons-round">compare</span> Compare Routes
+    </button>
+    <button class="action-btn" id="routesDownloadBtn2">
+      <span class="material-icons-round">save_alt</span> Save Map
+    </button>
+  </div>
+</div>
+<div class="routes-view-grid">
+  <div class="panel map-panel-full">
+    <div id="map2" class="map-full"></div>
+  </div>
+  <div id="routesContainer" class="routes-list-panel"></div>
+</div>

@@ -1,0 +1,53 @@
+/* base.css – CSS reset and design tokens */
+
+/* CSS Reset */
+html,body,div,span,applet,object,iframe,
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+a,abbr,acronym,address,big,cite,code,
+small,del,dfn,em,img,ins,kbd,q,s,samp,
+strike,strong,sub,sup,tt,var,
+b, u, i, center,
+fieldset,form,label,legend,
+caption,tbody,td,tfoot,th,thead,tr {
+    margin:0; padding:0; border:0; font-size:100%; font:inherit; vertical-align:baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section {
+    display:block;
+}
+body { line-height:1; }
+ol,ul { list-style:none; }
+blockquote,q { quotes:none; }
+blockquote:before,blockquote:after,q:before,q:after { content:''; content:none; }
+/* End Reset */
+
+:root {
+  /* Design tokens */
+  --color-bg-light: hsl(0,0%,95%);
+  --color-bg-dark: hsl(220,30%,10%);
+  --color-primary: hsl(180,70%,45%);
+  --color-text-light: hsl(0,0%,10%);
+  --color-text-dark: hsl(0,0%,90%);
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Orbitron', sans-serif;
+  --radius: 12px;
+}
+
+html[data-theme='light'] {
+  --bg-color: var(--color-bg-light);
+  --text-color: var(--color-text-light);
+}
+html[data-theme='dark'] {
+  --bg-color: var(--color-bg-dark);
+  --text-color: var(--color-text-dark);
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

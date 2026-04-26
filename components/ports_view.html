@@ -1,0 +1,28 @@
+<!-- ═══════════════════════════════════════
+     PORTS VIEW — components/ports_view.html
+     Sidebar button: Trade Lanes
+     Shows: Origin and destination port detail cards
+═══════════════════════════════════════ -->
+<div class="view-header-bar">
+  <h2>Trade Lane Intelligence</h2>
+  <div class="view-header-actions">
+    <button class="action-btn" id="portsCompareBtn2">
+      <span class="material-icons-round">compare</span> Side-by-Side Compare
+    </button>
+    <button class="action-btn" id="portsContactBtn2">
+      <span class="material-icons-round">contact_phone</span> All Contacts
+    </button>
+  </div>
+</div>
+<div class="ports-view-grid">
+  <div class="panel port-detail-card origin-port-panel">
+    <div class="port-panel-badge origin-badge">ORIGIN</div>
+    <h3 id="originPortTitle">⚓ Select Origin Port</h3>
+    <div id="originPortFull" class="port-full-details"></div>
+  </div>
+  <div class="panel port-detail-card dest-port-panel">
+    <div class="port-panel-badge dest-badge">DESTINATION</div>
+    <h3 id="destPortTitle">⚓ Select Destination Port</h3>
+    <div id="destPortFull" class="port-full-details"></div>
+  </div>
+</div>

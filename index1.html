@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nexus Supply Chain &mdash; Risk Analyzer Pro</title>
+  <meta name="description" content="Enterprise AI-powered supply chain risk analysis and route optimization platform."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <link rel="stylesheet" href="styles/dashboard.css"/>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MODAL OVERLAY
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal</h3>
+      <button class="modal-close-btn" onclick="closeModal()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     APP SHELL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="app-shell" id="appShell">
+
+  <!-- â•â•â• LEFT SIDEBAR â•â•â• -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <span class="material-icons-round">anchor</span>
+      </div>
+      <div class="brand-info">
+        <div class="brand-name">Supply Ops</div>
+        <div class="brand-sub">v2.4 Active</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard', this)">
+        <span class="material-icons-round">dashboard</span>
+        <span>Command Center</span>
+      </a>
+      <a class="nav-item" data-view="risks" onclick="switchView('risks', this)">
+        <span class="material-icons-round">shield</span>
+        <span>Risk Vectors</span>
+      </a>
+      <a class="nav-item" data-view="routes" onclick="switchView('routes', this)">
+        <span class="material-icons-round">hub</span>
+        <span>Network Graph</span>
+      </a>
+      <a class="nav-item" data-view="ports" onclick="switchView('ports', this)">
+        <span class="material-icons-round">swap_horiz</span>
+        <span>Trade Lanes</span>
+      </a>
+      <a class="nav-item" data-view="report" onclick="switchView('report', this)">
+        <span class="material-icons-round">summarize</span>
+        <span>Reporting</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-cta">
+      <button id="triggerMitigationBtn" class="btn-mitigation">
+        <span class="material-icons-round">bolt</span>
+        Trigger Mitigation
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-util" id="supportBtn">
+        <span class="material-icons-round">help_outline</span> Support
+      </button>
+      <button class="sidebar-util" id="archiveBtn">
+        <span class="material-icons-round">inventory_2</span> Archive
+      </button>
+    </div>
+  </aside>
+
+  <!-- â•â•â• MAIN AREA â•â•â• -->
+  <div class="main-area">
+
+    <!-- â•â•â• TOP BAR â•â•â• -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">Nexus Risk Analyzer</div>
+        <nav class="topbar-nav">
+          <button class="topbar-link active" onclick="switchTopNav('global', this)">Global View</button>
+          <button class="topbar-link" onclick="switchTopNav('predictive', this)">Predictive Ops</button>
+          <button class="topbar-link" onclick="switchTopNav('resource', this)">Resource Center</button>
+        </nav>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="historyBtn" title="History">
+          <span class="material-icons-round">history</span>
+          <span class="badge" id="historyBadge">0</span>
+        </button>
+        <button class="icon-btn" id="settingsBtn" title="Settings">
+          <span class="material-icons-round">tune</span>
+        </button>
+        <div class="user-avatar" title="User">
+          <span class="material-icons-round">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- â•â•â• COMMAND BAR â•â•â• -->
+    <div class="command-bar">
+      <form id="analysisForm" class="command-form" onsubmit="event.preventDefault(); if(typeof handleSubmit!=='undefined') handleSubmit(event); else console.error('handleSubmit missing');">
+        <div class="cmd-field">
+          <label>SOURCE PORT</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">trip_origin</span>
+            <select id="origin" required>
+              <option value="">Select origin...</option>
+              <option value="Shanghai">China (Shanghai Port)</option>
+              <option value="Rotterdam">Netherlands (Rotterdam)</option>
+              <option value="Singapore">Singapore Port</option>
+              <option value="Long Beach">USA (Long Beach)</option>
+              <option value="Los Angeles">USA (Los Angeles)</option>
+              <option value="Port Said">Egypt (Port Said)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>DESTINATION PORT</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">location_on</span>
+            <select id="destination" required>
+              <option value="">Select destination...</option>
+              <option value="Los Angeles">USA (Los Angeles Port)</option>
+              <option value="Rotterdam">Netherlands (Rotterdam)</option>
+              <option value="Singapore">Singapore Port</option>
+              <option value="Shanghai">China (Shanghai Port)</option>
+              <option value="Long Beach">USA (Long Beach)</option>
+              <option value="Port Said">Egypt (Port Said)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>PRODUCT TYPE</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">category</span>
+            <select id="product" required>
+              <option value="">Select product...</option>
+              <option value="Electronics">Semiconductors / Electronics</option>
+              <option value="Textiles">Textiles & Apparel</option>
+              <option value="Machinery">Machinery & Equipment</option>
+              <option value="Raw Materials">Raw Materials</option>
+              <option value="Chemicals">Chemicals</option>
+              <option value="Food">Food & Beverages</option>
+              <option value="Auto">Automotive Parts</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>SHIPMENT TYPE</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">swap_horiz</span>
+            <select id="shipmentType" required>
+              <option value="">Select type...</option>
+              <option value="Import">Import (Incoming)</option>
+              <option value="Export">Export (Outgoing)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="cmd-analyze-btn" id="analyzeBtn">
+          <span class="material-icons-round">travel_explore</span>
+          Analyze Risk
+        </button>
+        <button type="button" class="cmd-clear-btn" id="resetBtn">
+          <span class="material-icons-round">clear_all</span>
+        </button>
+      </form>
+
+      <!-- Quick routes -->
+      <div class="quick-routes">
+        <span class="quick-label">Quick:</span>
+        <button class="quick-chip" onclick="setQuickRoute('Shanghai','Los Angeles','Electronics','Export')">CN &rarr; US &nbsp;SHA-LAX</button>
+        <button class="quick-chip" onclick="setQuickRoute('Rotterdam','Singapore','Machinery','Import')">NL &rarr; SG &nbsp;RTM-SIN</button>
+        <button class="quick-chip" onclick="setQuickRoute('Singapore','Rotterdam','Electronics','Export')">SG &rarr; NL &nbsp;SIN-RTM</button>
+        <button class="quick-chip" onclick="setQuickRoute('Shanghai','Port Said','Raw Materials','Export')">CN &rarr; EG &nbsp;SHA-PSD</button>
+      </div>
+    </div>
+
+    <!-- â•â•â• ALERT BANNER â•â•â• -->
+    <div id="alertBanner" class="alert-banner" style="display:none;">
+      <span class="alert-icon material-icons-round">warning</span>
+      <div class="alert-text">
+        <strong id="alertTitle">Alert</strong>
+        <span id="alertMsg">Loading...</span>
+      </div>
+      <button id="alertAckBtn" class="alert-ack-btn">Acknowledge</button>
+      <button id="alertCloseBtn" class="alert-close-btn">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+
+    <!-- â•â•â• CONTENT AREA â•â•â• -->
+    <div class="content-area">
+
+      <!-- â•â•â•â•â•â•â• LOADING STATE â•â•â•â•â•â•â• -->
+      <div id="loadingState" class="loading-overlay" style="display:none;">
+        <div class="loading-card">
+          <div class="loading-ship-icon">
+            <div class="ship-spinner"></div>
+            <span class="material-icons-round ship-icon">directions_boat</span>
+          </div>
+          <h3>Running Multi-Agent Analysis</h3>
+          <p>6 AI agents processing simultaneously...</p>
+          <div class="agent-status-grid" id="agentGrid">
+            <div class="agent-status-item" data-agent="news"><span>ðŸ“°</span><span>News Agent</span><span class="ast running">Scanning...</span></div>
+            <div class="agent-status-item" data-agent="weather"><span>â›…</span><span>Weather Agent</span><span class="ast running">Checking...</span></div>
+            <div class="agent-status-item" data-agent="port"><span>âš“</span><span>Port Agent</span><span class="ast running">Querying...</span></div>
+            <div class="agent-status-item" data-agent="risk"><span>ðŸ”</span><span>Risk Assessment</span><span class="ast waiting">Waiting...</span></div>
+            <div class="agent-status-item" data-agent="route"><span>ðŸ—ºï¸</span><span>Route Optimizer</span><span class="ast waiting">Waiting...</span></div>
+            <div class="agent-status-item" data-agent="report"><span>ðŸ“Š</span><span>Report Generator</span><span class="ast waiting">Waiting...</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â•â•â•â•â• WELCOME / IDLE STATE â•â•â•â•â•â•â• -->
+      <div id="idleState" class="idle-state">
+        <div class="idle-hero">
+          <div class="idle-map-bg" id="idleMap"></div>
+          <div class="idle-overlay">
+            <div class="idle-badge">
+              <span class="material-icons-round">smart_toy</span>
+              Multi-Agent AI System &mdash; 6 Specialized Agents
+            </div>
+            <h1>Supply Chain<br><span class="accent-text">Risk Command Center</span></h1>
+            <p>Select ports above and click <strong>Analyze Risk</strong> to begin real-time intelligence gathering</p>
+            <div class="idle-metrics">
+              <div class="idle-metric"><strong>6</strong><span>AI Agents</span></div>
+              <div class="idle-metric"><strong>&lt;2s</strong><span>Analysis Time</span></div>
+              <div class="idle-metric"><strong>6</strong><span>Global Ports</span></div>
+              <div class="idle-metric"><strong>30+</strong><span>Risk Factors</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           DYNAMIC VIEW CONTAINER
+           Views are loaded here by switchView() in analyzer.js
+           Each sidebar button maps to one file in /components/
+           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+           dashboard  â†’ components/dashboard_view.html
+           risks      â†’ components/risks_view.html
+           routes     â†’ components/routes_view.html
+           ports      â†’ components/ports_view.html
+           report     â†’ components/report_view.html
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div id="mainContent" class="view-panel" style="display:none;"></div>
+
+
+    </div><!-- end content-area -->
+
+
+    <!-- â•â•â• BOTTOM STATUS BAR â•â•â• -->
+    <footer class="status-bar">
+      <div class="status-left">
+        <span class="status-dot" id="serverDot"></span>
+        <span id="serverStatus">Connecting...</span>
+        <span class="status-sep">|</span>
+        <span id="analysisCountLabel">Analyses: <strong id="analysisCount">0</strong></span>
+        <span class="status-sep">|</span>
+        <span>v2.0 Pro</span>
+      </div>
+      <div class="status-right" id="footerTime"></div>
+    </footer>
+
+  </div><!-- end main-area -->
+</div><!-- end app-shell -->
+
+<!-- â•â•â• AI COPILOT â•â•â• -->
+<button class="copilot-fab" id="talk-btn" title="AI Copilot">
+  <span class="material-icons-round">smart_toy</span>
+</button>
+
+<div class="ai-chat-section" id="ai-chat" style="display: none;">
+  <div class="chat-header">
+    <div class="chat-header-title">
+      <span class="material-icons-round">smart_toy</span>
+      SupplyOps Copilot
+    </div>
+    <button class="chat-close-btn" id="chat-close-btn" title="Close AI Copilot">
+      <span class="material-icons-round">close</span>
+    </button>
+  </div>
+  <div class="chat-window" id="chat-window"></div>
+  <div class="chat-inputwrap">
+    <input type="text" id="user-input" placeholder="e.g. Route from Shanghai to London"/>
+    <button id="send-btn"><span class="material-icons-round">send</span></button>
+  </div>
+</div>
+
+<!-- â•â•â• TOAST â•â•â• -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="scripts/analyzer.js"></script>
+<script src="scripts/gemini-chat.js"></script>
+</body>
+</html>

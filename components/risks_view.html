@@ -1,0 +1,137 @@
+<!-- ═══════════════════════════════════════
+     RISKS VIEW — components/risks_view.html
+     Sidebar button: Risk Vectors / Predictive Ops
+     Shows: Risk command cards, financial impact, strategy, scenarios, news, weather
+═══════════════════════════════════════ -->
+<div class="view-header-bar">
+  <h2>Risk Command Center</h2>
+  <div class="view-header-actions">
+    <button class="action-btn primary" id="exportRisksBtn">
+      <span class="material-icons-round">download</span> Export Risk Report
+    </button>
+  </div>
+</div>
+
+<div class="risk-command-grid" id="riskCommandGrid">
+
+  <!-- Risk Level + Confidence Gauge -->
+  <div class="risk-cmd-card risk-level-card">
+    <div class="rc-label">REAL-TIME ANALYSIS</div>
+    <h2 class="rc-big-title">Risk Command</h2>
+    <div class="rc-risk-badge" id="rcRiskBadge">
+      <span class="risk-badge-label" id="rcBadgeLabel">—</span>
+      <span class="risk-badge-sub" id="rcBadgeSub">Run analysis to see risk</span>
+    </div>
+    <p class="rc-desc" id="rcDesc">Select a route and run analysis to see real-time risk assessment from our 6 AI agents.</p>
+    <div class="rc-actions">
+      <button class="rc-btn primary" id="viewMitigationBtn">
+        <span class="material-icons-round">shield</span> View Mitigation Plan
+      </button>
+      <button class="rc-btn ghost" id="auditSourceBtn">
+        <span class="material-icons-round">manage_search</span> Audit Source Data
+      </button>
+    </div>
+    <div class="confidence-gauge">
+      <svg viewBox="0 0 100 100" class="conf-svg">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+        <circle id="confCircle" cx="50" cy="50" r="40" fill="none" stroke="#6366f1" stroke-width="8"
+          stroke-dasharray="251" stroke-dashoffset="251"
+          stroke-linecap="round" transform="rotate(-90 50 50)"/>
+      </svg>
+      <div class="conf-label">
+        <div class="conf-pct" id="confPct">--%</div>
+        <div class="conf-sub">CONFIDENCE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Impact -->
+  <div class="risk-cmd-card financial-card">
+    <div class="rc-label">FINANCIAL IMPACT</div>
+    <div class="fin-tag" id="finTag">+0% EST. COST</div>
+    <div class="fin-exposure">
+      <span class="fin-exp-label">Estimated Exposure</span>
+      <span class="fin-exp-val" id="finExposure">-- USD</span>
+    </div>
+    <div class="fin-rows" id="finRows">
+      <div class="fin-row placeholder"><span>Landed Cost Variance</span><span>--</span></div>
+      <div class="fin-row placeholder"><span>Port Charges</span><span>--</span></div>
+      <div class="fin-row placeholder"><span>Insurance Premium</span><span>--</span></div>
+      <div class="fin-row placeholder"><span>Customs Duty</span><span>--</span></div>
+    </div>
+  </div>
+
+  <!-- Strategic Recommendation -->
+  <div class="risk-cmd-card strategy-card">
+    <div class="strategy-header">
+      <span class="material-icons-round strategy-icon">auto_fix_high</span>
+      <div>
+        <div class="rc-label">STRATEGIC RECOMMENDATION</div>
+        <h3 id="stratTitle">Awaiting Analysis</h3>
+      </div>
+    </div>
+    <p id="stratDesc" class="strat-desc">Run an analysis to get AI-driven route optimization suggestions and risk mitigation recommendations.</p>
+    <div class="strat-map-preview" id="stratMapPreview">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/800px-World_map_-_low_resolution.svg.png"
+        alt="route map" style="width:100%;height:80px;object-fit:cover;filter:brightness(0.2) saturate(0);" onerror="this.style.display='none'"/>
+      <div class="strat-overlay-label">ACTIVE REROUTE SIMULATION</div>
+    </div>
+    <div class="proposed-action" id="proposedAction" style="display:none;">
+      <div class="pa-label">Proposed Action</div>
+      <div class="pa-route">
+        <span class="material-icons-round">directions_boat</span>
+        <strong id="paRoute">—</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alternative Scenarios -->
+  <div class="risk-cmd-card scenarios-card">
+    <div class="rc-label">ALTERNATIVE SCENARIOS</div>
+    <p class="rc-sub">Comparative analysis of potential routing paths</p>
+    <div class="scenarios-table">
+      <div class="sc-header">
+        <span>SCENARIO</span>
+        <span>COST DELTA</span>
+        <span>LEAD TIME</span>
+        <span>RISK RATING</span>
+        <span>ACTION</span>
+      </div>
+      <div id="scenariosBody" class="sc-body">
+        <div class="sc-row placeholder">
+          <span colspan="5" style="color:#475569; font-size:0.85em;">Run analysis to see alternative scenarios</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Geopolitical Intelligence / News -->
+  <div class="risk-cmd-card news-risk-card">
+    <div class="panel-header">
+      <div>
+        <div class="rc-label">GEOPOLITICAL INTELLIGENCE</div>
+        <div class="panel-title">News &amp; Disruption Signals</div>
+      </div>
+      <button class="panel-btn" onclick="if(appState.analysis) displayRisksView(appState.analysis); showToast('Refreshed', 'success')">
+        <span class="material-icons-round">refresh</span>
+      </button>
+    </div>
+    <div id="newsRiskDetails" class="news-feed">
+      <div class="news-placeholder">No data — run an analysis</div>
+    </div>
+  </div>
+
+  <!-- Meteorological / Weather -->
+  <div class="risk-cmd-card weather-risk-card">
+    <div class="panel-header">
+      <div>
+        <div class="rc-label">METEOROLOGICAL ANALYSIS</div>
+        <div class="panel-title">Weather Risk Assessment</div>
+      </div>
+    </div>
+    <div id="weatherRiskDetails" class="weather-feed">
+      <div class="news-placeholder">No data — run an analysis</div>
+    </div>
+  </div>
+
+</div>

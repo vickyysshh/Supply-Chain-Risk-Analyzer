@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nexus Supply Chain — Risk Analyzer Pro</title>
+  <meta name="description" content="Enterprise AI-powered supply chain risk analysis and route optimization platform."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <link rel="stylesheet" href="styles/dashboard.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     MODAL OVERLAY
+═══════════════════════════════════════ -->
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal</h3>
+      <button class="modal-close-btn" onclick="closeModal()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════ -->
+<div class="app-shell" id="appShell">
+
+  <!-- ═══ LEFT SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <span class="material-icons-round">anchor</span>
+      </div>
+      <div class="brand-info">
+        <div class="brand-name">Supply Ops</div>
+        <div class="brand-sub">v2.4 Active</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard', this)">
+        <span class="material-icons-round">dashboard</span>
+        <span>Command Center</span>
+      </a>
+      <a class="nav-item" data-view="risks" onclick="switchView('risks', this)">
+        <span class="material-icons-round">shield</span>
+        <span>Risk Vectors</span>
+      </a>
+      <a class="nav-item" data-view="routes" onclick="switchView('routes', this)">
+        <span class="material-icons-round">hub</span>
+        <span>Network Graph</span>
+      </a>
+      <a class="nav-item" data-view="ports" onclick="switchView('ports', this)">
+        <span class="material-icons-round">swap_horiz</span>
+        <span>Trade Lanes</span>
+      </a>
+      <a class="nav-item" data-view="report" onclick="switchView('report', this)">
+        <span class="material-icons-round">summarize</span>
+        <span>Reporting</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-cta">
+      <button id="triggerMitigationBtn" class="btn-mitigation">
+        <span class="material-icons-round">bolt</span>
+        Trigger Mitigation
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-util" id="supportBtn">
+        <span class="material-icons-round">help_outline</span> Support
+      </button>
+      <button class="sidebar-util" id="archiveBtn">
+        <span class="material-icons-round">inventory_2</span> Archive
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN AREA ═══ -->
+  <div class="main-area">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">Risk Analyzer</div>
+        <nav class="topbar-nav">
+          <button class="topbar-link active" onclick="switchTopNav('global', this)">Global View</button>
+          <button class="topbar-link" onclick="switchTopNav('predictive', this)">Predictive Ops</button>
+          <button class="topbar-link" onclick="switchTopNav('resource', this)">Resource Center</button>
+        </nav>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="historyBtn" title="History">
+          <span class="material-icons-round">history</span>
+          <span class="badge" id="historyBadge">0</span>
+        </button>
+        <button class="icon-btn" id="settingsBtn" title="Settings">
+          <span class="material-icons-round">tune</span>
+        </button>
+        <div class="user-avatar" title="User">
+          <span class="material-icons-round">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══ COMMAND BAR ═══ -->
+    <div class="command-bar">
+      <form id="analysisForm" class="command-form">
+        <div class="cmd-field">
+          <label>SOURCE PORT</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">trip_origin</span>
+            <select id="origin" required>
+              <option value="">Select origin...</option>
+              <option value="Shanghai">China (Shanghai Port)</option>
+              <option value="Rotterdam">Netherlands (Rotterdam)</option>
+              <option value="Singapore">Singapore Port</option>
+              <option value="Long Beach">USA (Long Beach)</option>
+              <option value="Los Angeles">USA (Los Angeles)</option>
+              <option value="Port Said">Egypt (Port Said)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>DESTINATION PORT</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">location_on</span>
+            <select id="destination" required>
+              <option value="">Select destination...</option>
+              <option value="Los Angeles">USA (Los Angeles Port)</option>
+              <option value="Rotterdam">Netherlands (Rotterdam)</option>
+              <option value="Singapore">Singapore Port</option>
+              <option value="Shanghai">China (Shanghai Port)</option>
+              <option value="Long Beach">USA (Long Beach)</option>
+              <option value="Port Said">Egypt (Port Said)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>PRODUCT TYPE</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">category</span>
+            <select id="product" required>
+              <option value="">Select product...</option>
+              <option value="Electronics">Semiconductors / Electronics</option>
+              <option value="Textiles">Textiles & Apparel</option>
+              <option value="Machinery">Machinery & Equipment</option>
+              <option value="Raw Materials">Raw Materials</option>
+              <option value="Chemicals">Chemicals</option>
+              <option value="Food">Food & Beverages</option>
+              <option value="Auto">Automotive Parts</option>
+            </select>
+          </div>
+        </div>
+        <div class="cmd-field">
+          <label>SHIPMENT TYPE</label>
+          <div class="cmd-select-wrap">
+            <span class="material-icons-round cmd-icon">swap_horiz</span>
+            <select id="shipmentType" required>
+              <option value="">Select type...</option>
+              <option value="Import">Import (Incoming)</option>
+              <option value="Export">Export (Outgoing)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="cmd-analyze-btn" id="analyzeBtn">
+          <span class="material-icons-round">travel_explore</span>
+          Analyze Risk
+        </button>
+        <button type="button" class="cmd-clear-btn" id="resetBtn">
+          <span class="material-icons-round">clear_all</span>
+        </button>
+      </form>
+
+      <!-- Quick routes -->
+      <div class="quick-routes">
+        <span class="quick-label">Quick:</span>
+        <button class="quick-chip" onclick="setQuickRoute('Shanghai','Los Angeles','Electronics','Export')">🇨🇳→🇺🇸 SHA-LAX</button>
+        <button class="quick-chip" onclick="setQuickRoute('Rotterdam','Singapore','Machinery','Import')">🇳🇱→🇸🇬 RTM-SIN</button>
+        <button class="quick-chip" onclick="setQuickRoute('Singapore','Rotterdam','Electronics','Export')">🇸🇬→🇳🇱 SIN-RTM</button>
+        <button class="quick-chip" onclick="setQuickRoute('Shanghai','Port Said','Raw Materials','Export')">🇨🇳→🇪🇬 SHA-PSD</button>
+      </div>
+    </div>
+
+    <!-- ═══ ALERT BANNER ═══ -->
+    <div id="alertBanner" class="alert-banner" style="display:none;">
+      <span class="alert-icon material-icons-round">warning</span>
+      <div class="alert-text">
+        <strong id="alertTitle">Alert</strong>
+        <span id="alertMsg">Loading...</span>
+      </div>
+      <button id="alertAckBtn" class="alert-ack-btn">Acknowledge</button>
+      <button id="alertCloseBtn" class="alert-close-btn">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+
+    <!-- ═══ CONTENT AREA ═══ -->
+    <div class="content-area">
+
+      <!-- ═══════ LOADING STATE ═══════ -->
+      <div id="loadingState" class="loading-overlay" style="display:none;">
+        <div class="loading-card">
+          <div class="loading-ship-icon">
+            <div class="ship-spinner"></div>
+            <span class="material-icons-round ship-icon">directions_boat</span>
+          </div>
+          <h3>Running Multi-Agent Analysis</h3>
+          <p>6 AI agents processing simultaneously...</p>
+          <div class="agent-status-grid" id="agentGrid">
+            <div class="agent-status-item" data-agent="news"><span>📰</span><span>News Agent</span><span class="ast running">Scanning...</span></div>
+            <div class="agent-status-item" data-agent="weather"><span>⛅</span><span>Weather Agent</span><span class="ast running">Checking...</span></div>
+            <div class="agent-status-item" data-agent="port"><span>⚓</span><span>Port Agent</span><span class="ast running">Querying...</span></div>
+            <div class="agent-status-item" data-agent="risk"><span>🔍</span><span>Risk Assessment</span><span class="ast waiting">Waiting...</span></div>
+            <div class="agent-status-item" data-agent="route"><span>🗺️</span><span>Route Optimizer</span><span class="ast waiting">Waiting...</span></div>
+            <div class="agent-status-item" data-agent="report"><span>📊</span><span>Report Generator</span><span class="ast waiting">Waiting...</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ WELCOME / IDLE STATE ═══════ -->
+      <div id="idleState" class="idle-state">
+        <div class="idle-hero">
+          <div class="idle-map-bg" id="idleMap"></div>
+          <div class="idle-overlay">
+            <div class="idle-badge">
+              <span class="material-icons-round">smart_toy</span>
+              Multi-Agent AI System — 6 Specialized Agents
+            </div>
+            <h1>Supply Chain<br><span class="accent-text">Risk Command Center</span></h1>
+            <p>Select ports above and click <strong>Analyze Risk</strong> to begin real-time intelligence gathering</p>
+            <div class="idle-metrics">
+              <div class="idle-metric"><strong>6</strong><span>AI Agents</span></div>
+              <div class="idle-metric"><strong>&lt;2s</strong><span>Analysis Time</span></div>
+              <div class="idle-metric"><strong>6</strong><span>Global Ports</span></div>
+              <div class="idle-metric"><strong>30+</strong><span>Risk Factors</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ DASHBOARD VIEW ═══════ -->
+      <div id="view-dashboard" class="view-panel" style="display:none;">
+
+        <div class="dashboard-grid">
+
+          <!-- COLUMN 1: Map + Route Cards -->
+          <div class="col-map">
+            <div class="panel map-panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span class="panel-dot green"></span>
+                  Route Visualization
+                </div>
+                <div class="panel-subtitle" id="mapSubtitle">ACTIVE MONITORING</div>
+                <div class="panel-actions">
+                  <button class="panel-btn" id="routesFitBtn" title="Fit routes">
+                    <span class="material-icons-round">fit_screen</span>
+                  </button>
+                  <button class="panel-btn" id="routesRefreshBtn" title="Refresh map">
+                    <span class="material-icons-round">refresh</span>
+                  </button>
+                  <button class="panel-btn" id="compareRoutesBtn" title="Compare routes">
+                    <span class="material-icons-round">compare</span>
+                  </button>
+                  <button class="panel-btn" id="routesDownloadBtn" title="Save map">
+                    <span class="material-icons-round">save_alt</span>
+                  </button>
+                </div>
+              </div>
+              <div class="map-container">
+                <div id="map"></div>
+                <div class="map-badges">
+                  <div class="map-badge red" id="mapRiskBadge" style="display:none;">
+                    <span class="dot red"></span>
+                    <span id="mapRiskBadgeText">HIGH RISK ZONES</span>
+                  </div>
+                  <div class="map-badge blue" id="mapAssetsBadge" style="display:none;">
+                    <span class="dot blue"></span>
+                    <span id="mapAssetsText">14 ASSETS IN TRANSIT</span>
+                  </div>
+                </div>
+                <div class="map-legend-float">
+                  <div class="ml-item"><span class="ml-dot" style="background:#10b981"></span>Origin</div>
+                  <div class="ml-item"><span class="ml-dot" style="background:#ef4444"></span>Destination</div>
+                  <div class="ml-item"><span class="ml-dot" style="background:#6366f1"></span>Main Route</div>
+                  <div class="ml-item"><span class="ml-dot" style="background:#f59e0b; opacity:0.8"></span>Alt Routes</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom mini panels row -->
+            <div class="bottom-panels-row">
+              <div class="panel mini-panel delay-panel">
+                <div class="panel-header">
+                  <div class="panel-title">Delay Prediction Timeline</div>
+                  <div class="engine-tag">PREDICTIVE ENGINE 3.1</div>
+                </div>
+                <div class="delay-chart" id="delayChart">
+                  <!-- Chart bars generated by JS -->
+                </div>
+              </div>
+              <div class="panel mini-panel cost-panel">
+                <div class="panel-header">
+                  <div class="panel-title">Cost Efficiency Analytics</div>
+                  <div class="optimized-tag" id="costStatusTag">ANALYZING</div>
+                </div>
+                <div class="cost-big-number" id="costBigNumber">—</div>
+                <div class="cost-label" id="costBigLabel">EST. TOTAL COST</div>
+                <div class="cost-trend-line">
+                  <svg id="costTrendSvg" viewBox="0 0 200 60" preserveAspectRatio="none">
+                    <path id="costTrendPath" d="M0 50 Q50 40 100 30 T200 20" fill="none" stroke="#6366f1" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="panel mini-panel score-panel">
+                <div class="mini-panel-label">RISK SCORE</div>
+                <div class="score-big" id="scoreBig">--</div>
+                <div class="score-desc" id="scoreDesc">Composite score based on congestion, weather patterns, and geopolitical stability markers.</div>
+                <div class="score-ring-wrap">
+                  <svg class="score-ring" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+                    <circle id="scoreRingFill" cx="40" cy="40" r="32" fill="none" stroke="#6366f1" stroke-width="6"
+                      stroke-dasharray="201" stroke-dashoffset="201"
+                      stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMN 2: Right Panel -->
+          <div class="col-right">
+
+            <!-- Real-time Vector Analysis -->
+            <div class="panel right-panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Real-time Vector Analysis</div>
+                  <div class="panel-subtitle">Live Intelligence Feed</div>
+                </div>
+                <button class="panel-btn" id="risksRefreshBtn" title="Refresh">
+                  <span class="material-icons-round">refresh</span>
+                </button>
+              </div>
+
+              <div class="vector-list" id="vectorList">
+                <!-- Port Congestion -->
+                <div class="vector-item">
+                  <div class="vector-header">
+                    <div class="vector-icon port-icon"><span class="material-icons-round">anchor</span></div>
+                    <div class="vector-info">
+                      <div class="vector-name">PORT CONGESTION</div>
+                      <div class="vector-status-tag" id="congStatusTag">CHECKING</div>
+                    </div>
+                    <button class="panel-btn" id="congestionDetailsBtn" title="Details">
+                      <span class="material-icons-round">open_in_new</span>
+                    </button>
+                  </div>
+                  <div class="vector-bar-wrap">
+                    <div class="vector-bar-track">
+                      <div class="vector-bar-fill" id="congBar" style="width:0%; background:#ef4444"></div>
+                    </div>
+                    <span class="vector-bar-pct" id="congPct">0%</span>
+                  </div>
+                  <div class="vector-detail-text" id="congDetail">--</div>
+                </div>
+
+                <!-- Weather -->
+                <div class="vector-item">
+                  <div class="vector-header">
+                    <div class="vector-icon weather-icon"><span class="material-icons-round">thunderstorm</span></div>
+                    <div class="vector-info">
+                      <div class="vector-name">WEATHER ANOMALIES</div>
+                      <div class="vector-status-tag stable" id="weatherStatusTag">CHECKING</div>
+                    </div>
+                    <button class="panel-btn" id="weatherDetailsBtn" title="Details">
+                      <span class="material-icons-round">open_in_new</span>
+                    </button>
+                  </div>
+                  <div class="vector-bar-wrap">
+                    <div class="vector-bar-track">
+                      <div class="vector-bar-fill" id="weatherBar" style="width:0%; background:#f59e0b"></div>
+                    </div>
+                    <span class="vector-bar-pct" id="weatherPct">0%</span>
+                  </div>
+                  <div class="vector-detail-text" id="weatherDetail">--</div>
+                </div>
+
+                <!-- News/Geopolitical -->
+                <div class="vector-item">
+                  <div class="vector-header">
+                    <div class="vector-icon news-icon"><span class="material-icons-round">newspaper</span></div>
+                    <div class="vector-info">
+                      <div class="vector-name">GEOPOLITICAL / NEWS</div>
+                      <div class="vector-status-tag" id="newsStatusTag">CHECKING</div>
+                    </div>
+                    <button class="panel-btn" id="newsDetailsBtn" title="Details">
+                      <span class="material-icons-round">open_in_new</span>
+                    </button>
+                  </div>
+                  <div class="vector-bar-wrap">
+                    <div class="vector-bar-track">
+                      <div class="vector-bar-fill" id="newsBar" style="width:0%; background:#8b5cf6"></div>
+                    </div>
+                    <span class="vector-bar-pct" id="newsPct">0%</span>
+                  </div>
+                  <div class="vector-detail-text" id="newsDetail">--</div>
+                </div>
+
+                <!-- Supplier / Tax -->
+                <div class="vector-item">
+                  <div class="vector-header">
+                    <div class="vector-icon tax-icon"><span class="material-icons-round">account_balance</span></div>
+                    <div class="vector-info">
+                      <div class="vector-name">CUSTOMS &amp; TAX</div>
+                      <div class="vector-status-tag nominal" id="taxStatusTag">CHECKING</div>
+                    </div>
+                    <button class="panel-btn" id="portsCompareBtn" title="Port details">
+                      <span class="material-icons-round">open_in_new</span>
+                    </button>
+                  </div>
+                  <div class="vector-bar-wrap">
+                    <div class="vector-bar-track">
+                      <div class="vector-bar-fill" id="taxBar" style="width:0%; background:#10b981"></div>
+                    </div>
+                    <span class="vector-bar-pct" id="taxPct">0%</span>
+                  </div>
+                  <div class="vector-detail-text" id="taxDetail">--</div>
+                </div>
+              </div>
+
+              <!-- EVENT LOG -->
+              <div class="event-log">
+                <div class="event-log-title">EVENT LOG</div>
+                <div id="eventLogList" class="event-log-list">
+                  <div class="event-item placeholder">
+                    <div class="event-bar"></div>
+                    <div class="event-info">
+                      <div class="event-name">Run analysis to see events</div>
+                      <div class="event-time">--</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Port Quick Info -->
+            <div class="panel port-quick-panel" id="portQuickPanel">
+              <div class="panel-header">
+                <div class="panel-title">Port Intelligence</div>
+                <div class="panel-actions">
+                  <button class="panel-btn" id="portsRefreshBtn" title="Refresh">
+                    <span class="material-icons-round">refresh</span>
+                  </button>
+                  <button class="panel-btn" id="originPortContactBtn" title="Origin contact">
+                    <span class="material-icons-round">call</span>
+                  </button>
+                  <button class="panel-btn" id="destPortContactBtn" title="Dest contact">
+                    <span class="material-icons-round">email</span>
+                  </button>
+                </div>
+              </div>
+              <div class="port-quick-grid">
+                <div class="port-quick-card origin-card">
+                  <div class="pqc-label">ORIGIN</div>
+                  <div class="pqc-name" id="originPortName">—</div>
+                  <div class="pqc-rows" id="originPortRows"></div>
+                  <button class="pqc-contact-btn" id="portContactOrigin" onclick="openPortContactModal(appState.analysis?.port?.origin?.name)">
+                    <span class="material-icons-round">call</span> Contact
+                  </button>
+                </div>
+                <div class="port-quick-card dest-card">
+                  <div class="pqc-label">DESTINATION</div>
+                  <div class="pqc-name" id="destPortName">—</div>
+                  <div class="pqc-rows" id="destPortRows"></div>
+                  <button class="pqc-contact-btn" id="portContactDest" onclick="openPortContactModal(appState.analysis?.port?.destination?.name)">
+                    <span class="material-icons-round">email</span> Contact
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ RISK VECTORS VIEW (Predictive Ops / Risk Vectors tab) ═══════ -->
+      <div id="view-risks" class="view-panel" style="display:none;">
+        <div class="view-header-bar">
+          <h2>Risk Command Center</h2>
+          <div class="view-header-actions">
+            <button class="action-btn primary" id="exportRisksBtn">
+              <span class="material-icons-round">download</span> Export Risk Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Risk command cards -->
+        <div class="risk-command-grid" id="riskCommandGrid">
+
+          <!-- Top row: Risk Level + Analysis + Financial -->
+          <div class="risk-cmd-card risk-level-card">
+            <div class="rc-label">REAL-TIME ANALYSIS</div>
+            <h2 class="rc-big-title">Risk Command</h2>
+            <div class="rc-risk-badge" id="rcRiskBadge">
+              <span class="risk-badge-label" id="rcBadgeLabel">—</span>
+              <span class="risk-badge-sub" id="rcBadgeSub">Run analysis to see risk</span>
+            </div>
+            <p class="rc-desc" id="rcDesc">Select a route and run analysis to see real-time risk assessment from our 6 AI agents.</p>
+            <div class="rc-actions">
+              <button class="rc-btn primary" id="viewMitigationBtn">
+                <span class="material-icons-round">shield</span> View Mitigation Plan
+              </button>
+              <button class="rc-btn ghost" id="auditSourceBtn">
+                <span class="material-icons-round">manage_search</span> Audit Source Data
+              </button>
+            </div>
+            <!-- Confidence gauge -->
+            <div class="confidence-gauge">
+              <svg viewBox="0 0 100 100" class="conf-svg">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                <circle id="confCircle" cx="50" cy="50" r="40" fill="none" stroke="#6366f1" stroke-width="8"
+                  stroke-dasharray="251" stroke-dashoffset="251"
+                  stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="conf-label">
+                <div class="conf-pct" id="confPct">--%</div>
+                <div class="conf-sub">CONFIDENCE</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="risk-cmd-card financial-card">
+            <div class="rc-label">FINANCIAL IMPACT</div>
+            <div class="fin-tag" id="finTag">+0% EST. COST</div>
+            <div class="fin-exposure">
+              <span class="fin-exp-label">Estimated Exposure</span>
+              <span class="fin-exp-val" id="finExposure">-- USD</span>
+            </div>
+            <div class="fin-rows" id="finRows">
+              <div class="fin-row placeholder">
+                <span>Landed Cost Variance</span><span>--</span>
+              </div>
+              <div class="fin-row placeholder">
+                <span>Port Charges</span><span>--</span>
+              </div>
+              <div class="fin-row placeholder">
+                <span>Insurance Premium</span><span>--</span>
+              </div>
+              <div class="fin-row placeholder">
+                <span>Customs Duty</span><span>--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Strategic Recommendation -->
+          <div class="risk-cmd-card strategy-card">
+            <div class="strategy-header">
+              <span class="material-icons-round strategy-icon">auto_fix_high</span>
+              <div>
+                <div class="rc-label">STRATEGIC RECOMMENDATION</div>
+                <h3 id="stratTitle">Awaiting Analysis</h3>
+              </div>
+            </div>
+            <p id="stratDesc" class="strat-desc">Run an analysis to get AI-driven route optimization suggestions and risk mitigation recommendations.</p>
+            <div class="strat-map-preview" id="stratMapPreview">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/800px-World_map_-_low_resolution.svg.png" 
+                alt="route map" style="width:100%;height:80px;object-fit:cover;filter:brightness(0.2) saturate(0);" onerror="this.style.display='none'"/>
+              <div class="strat-overlay-label">ACTIVE REROUTE SIMULATION</div>
+            </div>
+            <div class="proposed-action" id="proposedAction" style="display:none;">
+              <div class="pa-label">Proposed Action</div>
+              <div class="pa-route">
+                <span class="material-icons-round">directions_boat</span>
+                <strong id="paRoute">—</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alternative Scenarios: Routes -->
+          <div class="risk-cmd-card scenarios-card">
+            <div class="rc-label">ALTERNATIVE SCENARIOS</div>
+            <p class="rc-sub">Comparative analysis of potential routing paths</p>
+            <div class="scenarios-table">
+              <div class="sc-header">
+                <span>SCENARIO</span>
+                <span>COST DELTA</span>
+                <span>LEAD TIME</span>
+                <span>RISK RATING</span>
+                <span>ACTION</span>
+              </div>
+              <div id="scenariosBody" class="sc-body">
+                <div class="sc-row placeholder">
+                  <span colspan="5" style="color:#475569; font-size:0.85em;">Run analysis to see alternative scenarios</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- News Risk -->
+          <div class="risk-cmd-card news-risk-card">
+            <div class="panel-header">
+              <div>
+                <div class="rc-label">GEOPOLITICAL INTELLIGENCE</div>
+                <div class="panel-title">News & Disruption Signals</div>
+              </div>
+              <button class="panel-btn" onclick="if(appState.analysis) displayRisksView(appState.analysis); showToast('Refreshed', 'success')">
+                <span class="material-icons-round">refresh</span>
+              </button>
+            </div>
+            <div id="newsRiskDetails" class="news-feed">
+              <div class="news-placeholder">No data — run an analysis</div>
+            </div>
+          </div>
+
+          <!-- Weather Risk -->
+          <div class="risk-cmd-card weather-risk-card">
+            <div class="panel-header">
+              <div>
+                <div class="rc-label">METEOROLOGICAL ANALYSIS</div>
+                <div class="panel-title">Weather Risk Assessment</div>
+              </div>
+            </div>
+            <div id="weatherRiskDetails" class="weather-feed">
+              <div class="news-placeholder">No data — run an analysis</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════ ROUTES VIEW ═══════ -->
+      <div id="view-routes" class="view-panel" style="display:none;">
+        <div class="view-header-bar">
+          <h2>Network Route Graph</h2>
+          <div class="view-header-actions">
+            <button class="action-btn" id="compareRoutesBtn2">
+              <span class="material-icons-round">compare</span> Compare Routes
+            </button>
+            <button class="action-btn" id="routesDownloadBtn2">
+              <span class="material-icons-round">save_alt</span> Save Map
+            </button>
+          </div>
+        </div>
+        <div class="routes-view-grid">
+          <div class="panel map-panel-full">
+            <div id="map2" class="map-full"></div>
+          </div>
+          <div id="routesContainer" class="routes-list-panel"></div>
+        </div>
+      </div>
+
+      <!-- ═══════ PORTS / TRADE LANES VIEW ═══════ -->
+      <div id="view-ports" class="view-panel" style="display:none;">
+        <div class="view-header-bar">
+          <h2>Trade Lane Intelligence</h2>
+          <div class="view-header-actions">
+            <button class="action-btn" id="portsCompareBtn2">
+              <span class="material-icons-round">compare</span> Side-by-Side Compare
+            </button>
+            <button class="action-btn" id="portsContactBtn2">
+              <span class="material-icons-round">contact_phone</span> All Contacts
+            </button>
+          </div>
+        </div>
+        <div class="ports-view-grid">
+          <div class="panel port-detail-card origin-port-panel">
+            <div class="port-panel-badge origin-badge">ORIGIN</div>
+            <h3 id="originPortTitle">⚓ Select Origin Port</h3>
+            <div id="originPortFull" class="port-full-details"></div>
+          </div>
+          <div class="panel port-detail-card dest-port-panel">
+            <div class="port-panel-badge dest-badge">DESTINATION</div>
+            <h3 id="destPortTitle">⚓ Select Destination Port</h3>
+            <div id="destPortFull" class="port-full-details"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ REPORT VIEW ═══════ -->
+      <div id="view-report" class="view-panel" style="display:none;">
+        <div class="view-header-bar">
+          <h2>Intelligence Report</h2>
+          <div class="view-header-actions">
+            <button class="action-btn primary" id="downloadPdfBtn">
+              <span class="material-icons-round">picture_as_pdf</span> Download PDF
+            </button>
+            <button class="action-btn" id="downloadReportBtn">
+              <span class="material-icons-round">table_chart</span> Export CSV
+            </button>
+            <button class="action-btn" id="printReportBtn">
+              <span class="material-icons-round">print</span> Print
+            </button>
+            <button class="action-btn" id="emailReportBtn">
+              <span class="material-icons-round">email</span> Email
+            </button>
+            <button class="action-btn" id="copyReportBtn">
+              <span class="material-icons-round">content_copy</span> Copy
+            </button>
+          </div>
+        </div>
+        <div id="reportContainer" class="report-view-body"></div>
+      </div>
+
+    </div><!-- end content-area -->
+
+    <!-- ═══ BOTTOM STATUS BAR ═══ -->
+    <footer class="status-bar">
+      <div class="status-left">
+        <span class="status-dot" id="serverDot"></span>
+        <span id="serverStatus">Connecting...</span>
+        <span class="status-sep">|</span>
+        <span id="analysisCountLabel">Analyses: <strong id="analysisCount">0</strong></span>
+        <span class="status-sep">|</span>
+        <span>v2.0 Pro</span>
+      </div>
+      <div class="status-right" id="footerTime"></div>
+    </footer>
+
+  </div><!-- end main-area -->
+</div><!-- end app-shell -->
+
+<!-- ═══ TOAST ═══ -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="scripts/analyzer.js"></script>
+</body>
+</html>

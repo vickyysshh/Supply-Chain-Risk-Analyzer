@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supply Chain Risk Analyzer | AI-Powered Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;family=Space+Grotesk:wght@300;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#3a0093",
+                        "secondary-container": "#5318bf",
+                        "tertiary-container": "#c8300e",
+                        "surface-container-low": "#1b1b1b",
+                        "surface-dim": "#131313",
+                        "on-primary-fixed": "#2d004f",
+                        "surface-container-high": "#2a2a2a",
+                        "primary": "#e0b7ff",
+                        "on-tertiary-fixed-variant": "#8c1800",
+                        "surface-container": "#1f1f1f",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#3d0600",
+                        "inverse-on-surface": "#303030",
+                        "on-primary-fixed-variant": "#6b00af",
+                        "surface-bright": "#393939",
+                        "surface-tint": "#e0b7ff",
+                        "outline": "#9a8ca2",
+                        "primary-fixed": "#f1daff",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#353535",
+                        "tertiary": "#ffb4a4",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface": "#131313",
+                        "secondary": "#cfbdff",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-variant": "#353535",
+                        "on-tertiary": "#630e00",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb4a4",
+                        "on-tertiary-container": "#ffe6e1",
+                        "secondary-fixed": "#e9ddff",
+                        "background": "#131313",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#e0b7ff",
+                        "on-surface-variant": "#d1c1d9",
+                        "tertiary-fixed": "#ffdad3",
+                        "outline-variant": "#4e4356",
+                        "inverse-primary": "#8d00e4",
+                        "on-primary-container": "#f7e6ff",
+                        "on-secondary-fixed": "#22005d",
+                        "on-surface": "#e2e2e2",
+                        "on-background": "#e2e2e2",
+                        "on-secondary-container": "#bfa8ff",
+                        "on-primary": "#4b007d",
+                        "on-secondary-fixed-variant": "#5318bf",
+                        "secondary-fixed-dim": "#cfbdff",
+                        "primary-container": "#9e00ff",
+                        "accent-orange": "#FF5733"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+        .pulse-cta {
+            background: linear-gradient(135deg, #e0b7ff 0%, #9e00ff 100%);
+        }
+        .glass-panel {
+            background: rgba(53, 53, 53, 0.6);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(154, 140, 162, 0.15);
+        }
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        .animate-pulse-slow {
+            animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .video-gradient-overlay {
+            background: linear-gradient(to bottom, transparent 80%, rgba(19, 19, 19, 0.9) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30" data-mode="connect">
+<!-- TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-surface-container/60 backdrop-blur-xl shadow-[0_60px_60px_-10px_rgba(255,255,255,0.06)]">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-xl font-bold tracking-tighter text-[#e0b7ff] font-headline">SupplyChain AI</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#e0b7ff] border-b-2 border-[#e0b7ff] pb-1 font-label uppercase tracking-wider text-sm" href="#">Features</a>
+<a class="text-white/70 hover:text-white transition-colors font-label uppercase tracking-wider text-sm" href="#">How it Works</a>
+<a class="text-white/70 hover:text-white transition-colors font-label uppercase tracking-wider text-sm" href="#">Docs</a>
+</div>
+<button onclick="window.location.href='index1.html'" class="pulse-cta text-on-primary-container px-6 py-2.5 rounded-md font-label font-bold uppercase tracking-widest text-xs hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(158,0,255,0.4)]">
+                Launch Dashboard
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<main class="relative h-[819px] flex flex-col items-center justify-center overflow-hidden" data-stitch-vh="h-[819px]===h-[80vh]">
+<!-- Video Background -->
+<div class="absolute inset-0 z-0">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="https://crew-ai.b-cdn.net/Crewai-Hero.mp4" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-black/0 backdrop-grayscale-[0.2]"></div>
+</div>
+<!-- Hero Content -->
+<div class="relative z-10 container mx-auto px-6 text-center max-w-5xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high/40 border border-outline-variant/20 mb-8 backdrop-blur-md">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#e0b7ff]"></span>
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">System Status: Optimal</span>
+</div>
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold font-headline tracking-tight text-white mb-8 leading-[1.1]">
+                AI-Powered Supply Chain <br/>
+<span class="pulse-gradient-text">Risk Analyzer</span>
+</h1>
+<p class="text-lg md:text-xl text-on-surface-variant/80 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+                Predict disruptions, analyze risks, and make smarter supply chain decisions in real-time with our neural intelligence engine.
+            </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+<button onclick="window.location.href='index1.html'" class="pulse-cta text-on-primary-container px-10 py-4 rounded-md font-label font-bold uppercase tracking-[0.15em] text-sm group transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(158,0,255,0.6)] flex items-center gap-3">
+                    Analyze Risk 
+                    <span class="material-symbols-outlined text-sm translate-y-[1px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="bg-transparent border border-outline-variant/30 text-white px-10 py-4 rounded-md font-label font-bold uppercase tracking-[0.15em] text-sm hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+                    View Demo
+                </button>
+</div>
+</div>
+</main>
+<!-- Interactive Platform Section -->
+<section class="relative bg-background py-24 flex flex-col items-center px-8 md:px-12 overflow-hidden">
+<!-- Toggle Switch Header -->
+<div class="flex items-center gap-10 mb-16 relative z-10 font-label">
+<div class="flex items-center gap-3 text-white font-bold cursor-pointer group">
+<span class="material-symbols-outlined text-lg text-primary">bolt</span>
+<span class="uppercase tracking-[0.1em] text-sm">No code</span>
+</div>
+<div class="w-px h-6 bg-white/10"></div>
+<div class="flex items-center gap-3 text-white/40 hover:text-white transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-lg">code</span>
+<span class="uppercase tracking-[0.1em] text-sm">All code</span>
+</div>
+</div>
+<!-- Video Player / Browser Window UI -->
+<div class="relative w-full max-w-6xl mx-auto rounded-xl overflow-hidden border border-white/10 shadow-[0_60px_100px_-20px_rgba(0,0,0,0.8)] bg-[#0a0a0a]">
+<!-- Browser/Window Header -->
+<div class="flex items-center justify-between px-5 py-4 bg-[#1a1a1a] border-b border-white/5">
+<div class="flex items-center gap-6">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+</div>
+<div class="flex items-center gap-3 bg-[#0d0d0d] px-4 py-1.5 rounded-lg text-[11px] text-white/40 border border-white/5 min-w-[320px]">
+<span class="material-symbols-outlined text-xs">lock</span>
+<span class="font-label tracking-wide opacity-60">crewai.com/platform/risk-analyzer</span>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-white/20 text-sm">add</span>
+<span class="material-symbols-outlined text-white/20 text-sm">view_agenda</span>
+</div>
+</div>
+<!-- Video Content Area -->
+<div class="aspect-video relative bg-[#050505]">
+<video controls="" autoplay="" class="w-full h-full object-cover opacity-90" loop="" muted="" playsinline="">
+<source src="n.mp4" type="video/mp4"/>
+</video>
+
+</div>
+</div>
+<!-- Call to Action Button -->
+<div class="mt-16 text-center">
+<button onclick="window.location.href='index1.html'" class="bg-[#FF5733] hover:bg-[#e64d2e] text-white px-12 py-5 rounded-md font-label font-bold uppercase tracking-[0.15em] text-base flex items-center gap-4 transition-all duration-300 hover:scale-105 shadow-[0_10px_40px_-10px_rgba(255,87,51,0.5)]">
+            LAUNCH Dashboard
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+<!-- Powerful Features Section -->
+<section class="relative bg-surface-container py-24 px-8 border-t border-white/5">
+<div class="max-w-screen-2xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-extrabold font-headline tracking-tight text-white mb-4">Powerful Features</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto text-lg font-light">Analyze and manage supply chain risks in real-time</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">AI Risk Analysis</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Analyze disruptions using AI from news, weather, and logistics data.</p>
+</div>
+<!-- Feature 2 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">Real-Time Monitoring</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Track live weather, port status, and global events.</p>
+</div>
+<!-- Feature 3 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">route</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">Route Optimization</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Suggest safer and faster routes based on dynamic risk conditions.</p>
+</div>
+<!-- Feature 4 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">anchor</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">Port Intelligence</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Show congestion, delays, and port status in major global hubs.</p>
+</div>
+<!-- Feature 5 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">notification_important</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">Instant Alerts</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Notify stakeholders about storms, strikes, and regional disruptions.</p>
+</div>
+<!-- Feature 6 -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-white/5 hover:border-primary/30 transition-all group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">troubleshoot</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3 font-headline">Decision Support</h3>
+<p class="text-on-surface-variant/80 leading-relaxed text-sm font-light">Show risk level (High/Medium/Low) with actionable insights.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<!-- Content Sections (Bento Grid / Global Logistics Monitoring) -->
+<section class="relative bg-surface py-32 px-8 overflow-hidden">
+<div class="max-w-screen-2xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Large Feature -->
+<div class="md:col-span-8 glass-panel rounded-xl p-12 flex flex-col justify-between group hover:bg-surface-container-high transition-all duration-500">
+<div class="">
+<span class="font-label text-primary text-xs uppercase tracking-widest mb-4 block">Real-time Telemetry</span>
+<h3 class="text-3xl font-headline font-bold text-white mb-6">Global Logistics Monitoring</h3>
+<p class="text-on-surface-variant max-w-md">Our neural nodes track every maritime vessel and cargo aircraft in real-time, predicting delays before they manifest.</p>
+</div>
+<div class="mt-12 overflow-hidden rounded-lg aspect-video relative">
+<img alt="Logistics Map" class="w-full h-full object-cover opacity-90 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="global_map.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-highest/80 to-transparent"></div>
+</div>
+</div>
+<!-- Small Feature 1 -->
+<div class="md:col-span-4 bg-surface-container-low rounded-xl p-8 flex flex-col items-start gap-6 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-white">Risk Scoring</h3>
+<p class="text-sm text-on-surface-variant/80">Proprietary AI algorithms assign dynamic risk scores to every vendor in your stack based on 200+ geopolitical and environmental factors.</p>
+</div>
+<!-- Small Feature 2 -->
+<div class="md:col-span-4 bg-surface-container-low rounded-xl p-8 flex flex-col items-start gap-6 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-12 h-12 rounded-lg bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">psychology</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-white">Predictive Analytics</h3>
+<p class="text-sm text-on-surface-variant/80">Anticipate disruptions up to 14 days in advance using deep learning models trained on historical trade data and news cycles.</p>
+</div>
+<!-- Medium Feature -->
+<div class="md:col-span-8 glass-panel rounded-xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-12 group">
+<div class="flex-1">
+<h3 class="text-3xl font-headline font-bold text-white mb-6">Automated Mitigation</h3>
+<p class="text-on-surface-variant mb-8">When a risk is detected, the system automatically suggests alternative routes and suppliers to maintain operational continuity.</p>
+<button class="text-primary font-label text-xs uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all">
+                            Explore Automation <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="w-full md:w-64 h-64 rounded-full border border-primary/20 flex items-center justify-center relative">
+<div class="absolute inset-0 rounded-full border border-primary/5 animate-ping"></div>
+<div class="w-48 h-48 rounded-full bg-primary/10 backdrop-blur-xl flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">hub</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-surface-container-lowest py-16 px-8 border-t border-white/5">
+<div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="text-2xl font-bold tracking-tighter text-primary font-headline">SupplyChain AI</div>
+<p class="text-on-surface-variant/100 text-xs font-label uppercase tracking-widest">We made ❤️ and chai</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16">
+<div class="flex flex-col gap-4">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Platform</h4>
+<nav class="flex flex-col gap-2">
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Overview</a>
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Company</h4>
+<nav class="flex flex-col gap-2">
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+</div>
+</div>
+<div class="text-[10px] font-label uppercase tracking-widest text-white/20 text-center md:text-right">
+                &copy; Copyright || all right reserved. <br/>
+                Empowering global trade with predictive intelligence.
+            </div></div>
+</footer>
+</body></html>

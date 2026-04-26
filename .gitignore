@@ -1,0 +1,8 @@
+# Dependency directories
+node_modules/
+
+# Environment variables (Crucial to prevent leaking API keys)
+.env
+.env.local
+.env.development
+.env.production

@@ -1,0 +1,87 @@
+/* components.css – UI component styles, glassmorphism, hero, buttons, canvas */
+
+/* Hero section */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  background: linear-gradient(135deg, var(--color-primary) 0%, rgba(255,255,255,0.1) 100%);
+  overflow: hidden;
+}
+
+.hero-content {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.cta-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Canvas styling */
+.robot-canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Chat section */
+.chat-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.chat-section.hidden { display: none; }
+
+.chat-title { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--color-primary); }
+
+.chat-window { height: 300px; overflow-y: auto; padding: 0.5rem; background: rgba(0,0,0,0.05); border-radius: var(--radius); margin-bottom: 0.5rem; }
+
+.chat-input { width: 100%; padding: 0.5rem; border: 1px solid var(--color-primary); border-radius: var(--radius); resize: none; }
+
+.send-btn { margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius); cursor: pointer; }
+
+/* Footer */
+.footer { text-align: center; padding: 1rem; font-size: 0.9rem; }
