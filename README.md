@@ -28,49 +28,8 @@ A sophisticated supply chain disruption analyzer that uses intelligent agents to
 ✅ Confidence scores  
 ✅ Action recommendations  
 
----
 
-## 📋 Prerequisites
 
-- **Node.js** (v14+)
-- **npm** or **yarn**
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-
----
-
-## 🚀 Quick Start
-
-### 1️⃣ Install Dependencies
-
-```bash
-cd d:\Hackathon
-npm install
-```
-
-### 2️⃣ Start Backend Server
-
-```bash
-npm start
-# Server runs on http://localhost:5000
-```
-
-Output should show:
-```
-✅ Server running on http://localhost:5000
-```
-
-### 3️⃣ Open Frontend in Browser
-
-**Option A - Simple Server (Recommended)**
-```bash
-npm run serve
-# Opens on http://localhost:3000
-```
-
-**Option B - Direct Open**
-- Open `d:\Hackathon\dashboard.html` directly in your browser
-
----
 
 ## 🎯 How to Use
 
@@ -168,49 +127,6 @@ Reporting Agent
 Frontend Display (Map + Dashboard)
 ```
 
-### Agent Data Flow
-
-Each agent passes structured JSON data:
-
-**News Agent Output:**
-```json
-{
-  "articles": [...],
-  "riskScore": 0.65,
-  "keywords": ["strike", "typhoon"]
-}
-```
-
-**Weather Agent Output:**
-```json
-{
-  "alerts": [...],
-  "weatherRiskScore": 0.45,
-  "forecast": "Improving..."
-}
-```
-
-**Port Agent Output:**
-```json
-{
-  "congestionRisk": 0.50,
-  "totalWaitTime": 48,
-  "portCostPerContainer": 5700
-}
-```
-
-**Risk Assessment Output:**
-```json
-{
-  "riskLevel": "MEDIUM",
-  "riskScore": 45,
-  "costAnalysis": {...},
-  "recommendation": "..."
-}
-```
-
----
-
 ## 💰 Cost Breakdown
 
 Total estimated cost includes:
@@ -246,54 +162,6 @@ The interactive sea map shows:
 |-------|-------|-------|--------|
 | **LOW** | 0-35% | 🟢 Green | Proceed normally |
 | **MEDIUM** | 35-65% | 🟡 Yellow | Monitor & prepare contingency |
-| **HIGH** | 65-100% | 🔴 Red | Consider alternative routes |
-
----
-
-## 🔌 API Endpoints
-
-### Core Endpoint
-
-**POST** `/api/analyze`
-
-Request:
-```json
-{
-  "origin": "Shanghai",
-  "destination": "Los Angeles",
-  "product": "Electronics",
-  "route": "trans-pacific"
-}
-```
-
-Response:
-```json
-{
-  "success": true,
-  "analysis": {
-    "newsData": {...},
-    "weatherData": {...},
-    "portData": {...},
-    "riskAssessment": {...},
-    "alternativeRoutes": {...},
-    "report": {...}
-  }
-}
-```
-
-### Health Check
-
-**GET** `/api/health`
-
-Returns server status.
-
-### Available Routes
-
-**GET** `/api/routes`
-
-Returns predefined route options.
-
----
 
 ## 🚢 Supported Ports
 
@@ -361,122 +229,13 @@ RECOMMENDATIONS:
 → Set up weather alerts
 → Confirm with port authorities
 → Prepare contingency plan
-→ Standard insurance sufficient
-```
-
+→ Standard insurance sufficien
 ---
 
-## 🛠️ Technologies Used
 
-**Backend:**
-- Node.js + Express.js
-- Multi-Agent Architecture
-- Async/Promise-based coordination
-
-**Frontend:**
-- HTML5, CSS3, JavaScript (Vanilla)
-- Leaflet.js (OpenStreetMap integration)
-- Responsive Grid Layout
-
-**Data Sources (Mocked for Demo):**
-- News APIs (NewsAPI, GDELT)
-- Weather APIs (NOAA, OpenWeather)
-- Port APIs (SeaRates, JSONCargo)
-- Commodity APIs (EIA)
-
----
-
-## 🚀 Deployment
-
-### Local Development
-```bash
-npm start
-npm run serve
-```
-
-### Production Deployment
-
-**Heroku:**
-```bash
-heroku create supply-chain-analyzer
-git push heroku main
-```
-
-**AWS/Azure:**
-- Deploy backend to serverless (Lambda/Functions)
-- Host frontend on S3/Blob Storage
-- Use CDN for distribution
-
----
-
-## 📝 Environment Variables
-
-Create `.env` file:
-```bash
-PORT=5000
-NODE_ENV=development
-NEWSAPI_KEY=your_key
-OPENWEATHER_KEY=your_key
-EIA_KEY=your_key
-```
-
----
-
-## ⚙️ Advanced Configuration
-
-### Port Mapping
-Edit `backend/agents/PortAgent.js` to add custom ports:
-
-```javascript
-const portDatabase = {
-  'Dubai': {
-    congestion: 'Medium',
-    waitTime: 20,
-    price: 2200,
-    // ...
-  }
-};
-```
-
-### Risk Thresholds
-Edit `backend/agents/RiskAssessmentAgent.js`:
-
-```javascript
-const weights = {
-  news: 0.35,
-  weather: 0.30,
-  congestion: 0.25,
-  tax: 0.10
-};
-```
 
 ### Custom Routes
-Edit `backend/agents/RouteOptimizerAgent.js` to add new routes.
-
----
-
-## 📞 Support & Troubleshooting
-
-### Issue: "Failed to analyze route"
-- ✅ Ensure backend server is running: `npm start`
-- ✅ Check if port 5000 is available
-- ✅ Check browser console for errors (F12)
-
-### Issue: Map not loading
-- ✅ Check internet connection (uses CDN)
-- ✅ Clear browser cache
-- ✅ Try different browser
-
-### Issue: Slow performance
-- ✅ Close unnecessary browser tabs
-- ✅ Restart Node.js server
-- ✅ Check system resources
-
----
-
-## 📄 License
-
-MIT License - Free to use and modify
+Edit `backend/agents/RouteOptimizerAgent.js` to add new routes
 
 ---
 
